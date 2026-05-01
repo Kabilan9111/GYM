@@ -15,24 +15,23 @@ export const FloatingParticles = () => (
 );
 
 export const LightStreak = () => (
-  <motion.div className="absolute inset-0 pointer-events-none overflow-hidden z-0 mix-blend-overlay">
+  <motion.div className="absolute inset-0 pointer-events-none overflow-hidden z-[1] mix-blend-overlay">
     <motion.div 
-      className="absolute top-0 bottom-0 w-[60px] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[30deg]"
-      initial={{ x: '-400%' }}
-      animate={{ x: '600%' }}
-      transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 4, ease: "easeInOut" }}
+      className="absolute top-0 bottom-0 w-[120px] bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[30deg]"
+      animate={{ x: ['-400%', '600%'] }}
+      transition={{ duration: 4, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
     />
   </motion.div>
 );
 
 export const FlowingGradient = () => (
   <motion.div 
-    className="absolute inset-0 pointer-events-none z-0 opacity-80"
+    className="absolute inset-0 pointer-events-none z-0 opacity-90 mix-blend-plus-lighter"
     style={{
-      background: 'linear-gradient(110deg, rgba(255,45,45,0.4) 0%, rgba(5,5,5,0.8) 50%, rgba(255,45,45,0.3) 100%)',
+      background: 'linear-gradient(110deg, rgba(255,45,45,0.6) 0%, rgba(5,5,5,0.8) 50%, rgba(255,45,45,0.4) 100%)',
       backgroundSize: '200% 200%'
     }}
     animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
-    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+    transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
   ></motion.div>
 );

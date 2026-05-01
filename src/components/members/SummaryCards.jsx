@@ -22,6 +22,29 @@ export default function SummaryCards({ members, mode }) {
     <div className={`grid grid-cols-2 md:grid-cols-3 ${mode === 'pack' ? 'lg:grid-cols-5' : 'lg:grid-cols-3'} gap-5 w-full mb-8 z-10 relative`}>
       {tiers.map((tier, i) => {
         const count = members.filter(m => (mode === 'pack' ? m.pack : m.category) === tier.label).length;
+        const isPlatinum = tier.label === 'Platinum' || tier.label === 'Premium';
+
+        const bg = isPlatinum 
+          ? `radial-gradient(150% 150% at 50% 0%, rgba(${tier.rgb}, 0.1) 0%, rgba(5,5,5,0.98) 100%)`
+          : `radial-gradient(120% 120% at 50% -10%, rgba(${tier.rgb}, 0.2) 0%, rgba(${tier.rgb}, 0.05) 40%, rgba(5,5,5,0.95) 100%)`;
+
+        const shadow = `
+          0 20px 40px -10px rgba(0,0,0,0.8), 
+          0 10px 30px -15px rgba(${tier.rgb}, 0.4), 
+          inset 0 0 30px rgba(${tier.rgb}, 0.1), 
+          inset 0 1px 0 rgba(255,255,255,0.15), 
+          inset 1px 0 0 rgba(255,255,255,0.05), 
+          inset -1px 0 0 rgba(255,255,255,0.05)
+        `;
+
+        const hoverShadow = `
+          0 30px 60px -15px rgba(0,0,0,0.9), 
+          0 20px 50px -10px rgba(${tier.rgb}, 0.6), 
+          inset 0 0 40px rgba(${tier.rgb}, 0.2), 
+          inset 0 1px 0 rgba(255,255,255,0.25), 
+          inset 1px 0 0 rgba(255,255,255,0.1), 
+          inset -1px 0 0 rgba(255,255,255,0.1)
+        `;
 
         return (
           <motion.div 
@@ -29,33 +52,40 @@ export default function SummaryCards({ members, mode }) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.4, ease: "easeOut" }}
-            className="group relative p-5 rounded-2xl overflow-hidden cursor-default transition-all duration-300 hover:-translate-y-1.5"
+            className={`group relative p-5 rounded-2xl overflow-hidden cursor-default transition-all duration-500 ease-out z-10 ${isPlatinum ? 'animate-pulse-slow' : ''}`}
             style={{ 
-              background: `linear-gradient(135deg, rgba(${tier.rgb}, 0.15) 0%, rgba(5,5,5,0.85) 100%)`,
-              boxShadow: `0 15px 30px -10px rgba(0,0,0,0.8), inset 0 0 20px rgba(${tier.rgb}, 0.1), inset 1px 1px 0 rgba(255,255,255,0.08)`,
+              background: bg,
+              boxShadow: shadow,
               backdropFilter: 'blur(20px)'
             }}
+            whileHover={{ y: -8, boxShadow: hoverShadow }}
           >
-            {/* Layers */}
-            <div className="absolute inset-0 border border-white/5 group-hover:border-white/10 rounded-[inherit] pointer-events-none transition-colors"></div>
-            <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}></div>
-            <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full blur-[30px] opacity-30 group-hover:opacity-50 transition-opacity duration-500 pointer-events-none" style={{ backgroundColor: tier.hex }}></div>
+            <div className="absolute inset-0 backdrop-blur-2xl rounded-[inherit] -z-10 pointer-events-none"></div>
             
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 rounded-[inherit] pointer-events-none"></div>
+            {/* Noise Texture */}
+            <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay -z-10 pointer-events-none" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")" }}></div>
+            
+            {/* Additional Color Glow */}
+            {!isPlatinum && (
+              <div className="absolute inset-0 opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none -z-10 mix-blend-screen" style={{ background: `radial-gradient(ellipse at top left, rgba(${tier.rgb}, 0.25) 0%, transparent 70%)` }}></div>
+            )}
+            
+            {/* Glass Reflection */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-white/[0.01] to-transparent opacity-70 group-hover:opacity-100 group-hover:from-white/[0.12] transition-colors duration-500 rounded-[inherit] pointer-events-none -z-10 blur-[2px]"></div>
 
             <div className="relative z-10 flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tier.hex, boxShadow: `0 0 8px ${tier.hex}` }}></div>
-                <p className="text-[11px] text-gray-300 font-bold uppercase tracking-wider">{tier.label}</p>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tier.hex, boxShadow: `0 0 10px ${tier.hex}` }}></div>
+                <p className="text-[10px] drop-shadow-md text-gray-200 font-bold uppercase tracking-widest">{tier.label}</p>
               </div>
-              <div className="p-2 rounded-lg bg-black/40 border border-white/10 text-gray-400 shadow-inner">
+              <div className="p-2 rounded-lg bg-black/40 border border-white/5 text-gray-400 shadow-[inset_0_2px_15px_rgba(0,0,0,0.5)] group-hover:text-white transition-colors">
                 <FiUsers size={14}/>
               </div>
             </div>
             
             <div className="relative z-10 flex items-end gap-3 mt-1">
-              <h4 className="text-3xl font-black tracking-tight text-white drop-shadow-md">{count}</h4>
-              <div className="flex items-center gap-1 text-[11px] font-bold tracking-wide mb-1.5 px-2 py-0.5 rounded-full bg-black/30 border border-white/5" style={{ color: tier.hex }}>
+              <h4 className="text-3xl font-black tracking-tight text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">{count}</h4>
+              <div className="flex items-center gap-1 text-[10px] font-bold tracking-widest mb-1.5 px-2.5 py-0.5 rounded-full bg-black/40 border border-white/10 shadow-[0_5px_10px_-2px_rgba(0,0,0,0.5)]" style={{ color: tier.hex }}>
                 <FiTrendingUp size={12} /> +{(Math.random()*15).toFixed(1)}%
               </div>
             </div>
