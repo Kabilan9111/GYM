@@ -3,6 +3,8 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Members from './components/Members';
+import Attendance from './components/Attendance';
+import Revenue from './components/Revenue';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -17,6 +19,8 @@ function App() {
           <div className="max-w-[1600px] mx-auto relative">
             {activeTab === 'DASHBOARD' && <Dashboard />}
             {activeTab === 'MEMBERS' && <Members />}
+            {activeTab === 'ATTENDANCE' && <Attendance />}
+            {activeTab === 'REVENUE' && <Revenue />}
           </div>
         </main>
       </div>
